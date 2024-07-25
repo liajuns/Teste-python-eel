@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informações do Paciente</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+<body>
+    <header>
+        <a class="voltar" href="index.html"><img class="volta-image" src="../images/Voltar.png" alt="Loading"></a>
+        <h1>Informações do Paciente</h1>
+        <img class="Paciente" src="../images/Paciente.png" alt="Paciente">  
+    </header>
+    <main>
+        <form id="frmPaciente" onsubmit="event.preventDefault();">
+            <section class="centralizar">
+                <div class="campo">
+                    <label for="nome">Nome do Paciente:</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                <div class="campo">
+                    <label for="dataNascimento">Data de Nascimento:</label>
+                    <input type="date" id="dataNascimento" name="dataNascimento" required>
+                </div>
+                <div class="campo">
+                    <label for="sexo">Sexo:</label>
+                    <select class="sexo" id="sexo" name="sexo" required>
+                        <option value="masculino">Masculino</option>
+                        <option value="feminino">Feminino</option>
+                    </select>
+                </div>
+                <div class="campo">
+                    <label for="dataExame">Data e Hora do exame:</label>
+                    <input type="datetime-local" id="dataExame" name="dataExame" required>
+                </div>
+                <button type="button" id="btnSave">Finalizar cadastro</button>
+                <button type="button" onclick="selectFolder()">Escolher Pasta</button>
+            </section>
+        </form>
+        <script>
+            var selectedDirectory = "";
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('btnSave').addEventListener('click', saveData);
+            });
+
+            eel.expose(saveData);
+
+            function saveData() {
+                var nome = document.getElementById('nome').value;
+                var dataNascimento = document.getElementById('dataNascimento').value;
+                var sexo = document.getElementById("sexo").value;
+                var dataExame = document.getElementById("dataExame").value;
+
+                if (selectedDirectory === ""){
+                    alert("por favor, selecione um diretorio antes de salvar");
+                    return;
+                }
+
+                eel.store_data(nome, dataNascimento, sexo, dataExame, selectedDirectory)(function() {
+                    eel.show_confirmation();
+                });
+            }
+
+
+            eel.expose(selectFolder);
+            function selectFolder() {
+                eel.select_directory()(function(directory) {
+                    console.log('Diretório selecionado:', directory);
+                    if (directory) {
+                        alert("diretorio selecionado:" + directory)
+                    }
+                    selectedDirectory = directory;
+                });
+            }
+        </script>
+    </main>
+</body>
+</html>
